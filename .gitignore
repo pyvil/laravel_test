@@ -1,0 +1,4 @@
+.idea
+docker/log/nginx/*
+docker/log/php/*
+docker/log/musql/data/*

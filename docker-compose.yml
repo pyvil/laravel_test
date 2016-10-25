@@ -1,0 +1,50 @@
+version: '2.0'
+
+services:
+  data:
+    container_name: laravel_data
+    hostname: laravel_data
+    image: busybox
+    volumes: 
+      - .:/data
+      - ../src:/var/www/laravel
+
+  nginx: 
+    container_name: laravel_nginx
+    hostname: laravel_nginx
+    build: builds/nginx
+    expose:
+      - 80
+    volumes_from:
+      - data
+    volumes:
+      - ./log/nginx:/var/log/nginx
+    environment:
+      - VIRTUAL_HOST=laravel.local
+
+  php:
+    container_name: laravel_php7
+    hostname: laravel_php7
+    build: builds/php
+    expose:
+      - 9000
+    volumes_from:
+      - data
+
+  mysql:
+    container_name: laravel_mysql
+    image: mysql:5.6
+    volumes:
+      - ./log/mysql/data:/var/lib/mysql
+      - ./log/mysql:/var/log
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+
+networks:
+  default:
+  frontrouter:
+    external:
+       name: frontrouter_shared
