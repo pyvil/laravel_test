@@ -14,3 +14,10 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+/**
+ * Create category
+ */
+Route::post('category', 'CategoryController@create');
+
+Route::get('category', 'CategoryController@index');
