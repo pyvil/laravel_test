@@ -11,13 +11,22 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'HomeController@index');
 
 /**
  * Create category
  */
-Route::post('category', 'CategoryController@create');
+Route::post('category/create', 'CategoryController@create');
 
-Route::get('category', 'CategoryController@index');
+/**
+ * Create task
+ */
+Route::post('task/create', 'TaskController@create');
+/**
+ * Update task
+ */
+Route::post('task/update/{id}', 'TaskController@update');
+/**
+ * Delete task
+ */
+Route::post('task/delete/{id}', 'TaskController@delete');
