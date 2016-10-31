@@ -7,21 +7,27 @@
  */
 namespace App\Http\Controllers;
 
-use Exception;
+use App\Model\Category;
 use Illuminate\Http\Request;
-
-use App\Http\Requests;
-use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
     /**
-     * Category create action
+     * Category create action through ajax, otherwise - redirect
      *
-     * @return void
+     * @param Request $request request instance
+     *
+     * @return mixed
      */
-    public function create()
+    public function create(Request $request)
     {
-        
+        if ($request->ajax()) {
+            $category = new Category();
+            if ($category->fillData($request->all())->validate() && $category->save()) {
+                return response()->json(['data' => $category->toArray(), 'status' => 1]);
+            }
+            return response()->json(['data' => [], 'status' => 0]);
+        }
+        return redirect('/');
     }
 }
