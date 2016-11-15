@@ -1,3 +1,10 @@
+<?php
+/** @var App\Model\Category $categories[] */
+/** @var App\Model\Category $category */
+
+/** @var App\Model\Task $task */
+/** @var App\Model\Task $tasks[] */
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,22 +34,16 @@
                     </button>
                 </div>
                 <div class="panel-body list-group">
-                    <a href="#" class="list-group-item active">
-                        <span class="badge">3</span>
+                    <a href="javascript:void(0)" class="list-group-item active">
+                        <span class="badge">{{ count($tasks) }}</span>
                         All
                     </a>
-                    <a href="#" class="list-group-item">
-                        <span class="badge">1</span>
-                        Category 1
-                    </a>
-                    <a href="#" class="list-group-item">
-                        <span class="badge">1</span>
-                        Category 2
-                    </a>
-                    <a href="#" class="list-group-item">
-                        <span class="badge">1</span>
-                        Category 3
-                    </a>
+                    @foreach ($categories as $category)
+                        <a href="javascript:void(0)" class="list-group-item">
+                            <span class="badge">{{ $category->getTasks()->count() }}</span>
+                            {{ $category->getName()  }}
+                        </a>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -131,13 +132,15 @@
                 <form id="task-create">
                     <div class="form-group">
                         <label>Task</label>
-                        <input type="text" class="form-control" placeholder="Task">
+                        <input type="text" name="name" class="form-control" placeholder="Task">
                     </div>
                     <div class="form-group">
                         <label>Category</label>
-                        <select class="form-control">
-                            <option></option>
-
+                        <select class="form-control" name="category">
+                            <option value="">Select value</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}">{{ $category->getName() }}</option>
+                            @endforeach
                         </select>
                     </div>
                     {{ csrf_field() }}
@@ -147,7 +150,7 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">
                     Close
                 </button>
-                <button type="button" class="btn btn-primary">
+                <button type="button" class="btn btn-primary" id="task-btn">
                     Save changes
                 </button>
             </div>

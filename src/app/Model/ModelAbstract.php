@@ -41,23 +41,10 @@ abstract class ModelAbstract extends Model
     public function validate()
     {
         foreach ($this->getAttributes() as $key => $value) {
-            if (empty($this->attributes[$key])) {
+            if (empty($this->attributes[$key]) && $this->attributes[$key] != 0) {
                 return false;
             }
         }
         return true;
-    }
-
-    /**
-     * Change primary key dynamically
-     *
-     * @param string $value value
-     *
-     * @return $this
-     */
-    public function changePrimaryKey($value)
-    {
-        $this->primaryKey = $value;
-        return $this;
     }
 }

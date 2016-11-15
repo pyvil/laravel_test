@@ -7,7 +7,10 @@
  */
 namespace App\Http\Controllers;
 
+use App\Model\Task;
+use App\Model\TaskCategory;
 use Illuminate\Http\Request;
+use Mockery\CountValidator\Exception;
 
 class TaskController extends Controller
 {
@@ -20,7 +23,18 @@ class TaskController extends Controller
      */
     public function create(Request $request)
     {
-
+        if ($request->ajax()) {
+            $model = new Task();
+            if ($model->fillData($request->all())->validate() && $model->save()) {
+                $modelRel = new TaskCategory();
+                $modelRel->setAttribute('id_task', (int) $model->id);
+                $modelRel->setAttribute('id_category', (int) $request->all()['category']);
+                $modelRel->save();
+                return response()->json(['data' => $model->toArray(), 'status' => 1]);
+            }
+            return response()->json(['data' => [], 'status' => 0]);
+        }
+        return redirect('/');
     }
 
     /**
@@ -31,9 +45,16 @@ class TaskController extends Controller
      *
      * @return mixed
      */
-    public function update(Request $request ,$id)
+    public function update(Request $request, $id)
     {
-
+        if ($request->ajax()) {
+            $model = Task::find($id);
+            if ($model && $model->fillData($request->all())->validate() && $model->save()) {
+                return response()->json(['data' => $model->toArray(), 'status' => 1]);
+            }
+            return response()->json(['data' => [], 'status' => 0]);
+        }
+        return redirect('/');
     }
 
     /**
@@ -46,6 +67,13 @@ class TaskController extends Controller
      */
     public function delete(Request $request, $id)
     {
-
+        if ($request->ajax()) {
+            $model = Task::find($id);
+            if ($model && $model->delete()) {
+                return response()->json(['data' => [], 'status' => 1]);
+            }
+            return response()->json(['data' => [], 'status' => 0]);
+        }
+        return redirect('/');
     }
 }

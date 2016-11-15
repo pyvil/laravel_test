@@ -20,11 +20,11 @@ namespace App\Model;
 class Category extends ModelAbstract
 {
     /**
-     * Connected PK
-     *
+     * table
+     * 
      * @var string
      */
-    const CONNECTED_PK = 'id_task';
+    const TABLE = 'category';
     /**
      * Attributes list
      * 
@@ -46,17 +46,46 @@ class Category extends ModelAbstract
     /**
      * Relate category to task model (through taskcategory model)
      *
-     * In order to Laravel behavior in hasManyThrough - use method changePrimaryKey (@see ModelAbstract::changePrimaryKey)
-     * in order to change primary in query
-     *  "select * from `task` inner join `task_category` on `task_category`.`id_task` = `task`.`id` where `task_category`.`id_category` = ?"
-     * because, by default it use primary key (in this case: table - task_category, PK - id; and it need to be changed to id_task)
-     *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function tasks()
+    public function getTasks()
     {
-        return $this->changePrimaryKey(self::CONNECTED_PK)
-                    ->hasManyThrough('App\Model\Task', 'App\Model\TaskCategory', 'id_category', 'id', 'id');
+        return $this->hasManyThrough('App\Model\Task', 'App\Model\TaskCategory', 'id_category', 'id', 'id');
     }
 
+    /**
+     * Category name
+     * 
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getAttributeValue('name');
+    }
+
+    /**
+     * Category created_date
+     *
+     * @return string|null
+     */
+    public function getCreatedAt()
+    {
+        if ($this->getAttributeValue('created_at')) {
+            return $this->getAttributeValue('created_at');
+        }
+        return null;
+    }
+
+    /**
+     * Category created_date
+     *
+     * @return string|null
+     */
+    public function getUpdatedAt()
+    {
+        if ($this->getAttributeValue('updated_at')) {
+            return $this->getAttributeValue('updated_at');
+        }
+        return null;
+    }
 }

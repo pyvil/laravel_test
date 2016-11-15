@@ -8,6 +8,7 @@
 namespace App\Http\Controllers;
 
 use App\Model\Category;
+use App\Model\Task;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -17,8 +18,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        var_dump(Category::find(1)->tasks()->getQuery()->getQuery()->toSql());
-
-        return view('index', ['categories' => '']);
+        var_dump((new Task())->getCategory()->getQuery()->getQuery()->toSql());
+        return view('index', ['categories' => Category::all(), 'tasks' => Task::all()]);
     }
 }
